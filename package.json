@@ -1,0 +1,13 @@
+{
+  "name": "frank-slot-test",
+  "uuid": "e17a4305-6f2b-4753-b646-5afccf87011f",
+  "creator": {
+    "version": "3.8.1",
+    "registry": {
+      "remote": {}
+    },
+    "dependencies": {
+      "localization-editor": "1.0.1"
+    }
+  }
+}
