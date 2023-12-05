@@ -3,14 +3,14 @@ const { ccclass, property } = _decorator;
 
 @ccclass("GameManager")
 export class GameManager extends Component {
-  @property({ type: Node, tooltip: "老虎本體" })
-  slot: Node = null;
+  @property({ type: Node, tooltip: "老虎機本體" })
+  machine: Node = null;
 
   // 關閉開關
   private block = false;
   private result: ResultInterface = null;
 
-  start() {}
+  private _reelCount = 0
+  
 
-  update(deltaTime: number) {}
 }
