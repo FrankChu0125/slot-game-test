@@ -10,3 +10,6 @@ interface ResultInterface {
   /** 連線到的角子圖示是第幾個 */
   equalTile: number;
 }
+
+
+

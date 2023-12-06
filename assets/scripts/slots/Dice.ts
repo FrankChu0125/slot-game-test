@@ -14,16 +14,20 @@ export class Dice extends Component {
   @property({
     type: [SpriteFrame],
     tooltip: "角子圖案樣式數組",
-    visible: false,
   })
   private textures: SpriteFrame[] = [];
 
+  get diceCount() {
+    return this.textures.length;
+  }
+
   async onLoad() {
     // 在設定完圖片之前先關閉顯示
-    this.node.getComponent(UIOpacity).opacity = 0
+    this.node.getComponent(UIOpacity).opacity = 0;
     await this.loadTextures();
-    this.node.getComponent(UIOpacity).opacity = 255
-    this.setRandom();
+    if (this.node) {
+      this.node.getComponent(UIOpacity).opacity = 255;
+    }
   }
 
   /** 讀取圖片 */
@@ -41,19 +45,16 @@ export class Dice extends Component {
     });
   }
 
-  /** 重新設定圖示 */
-  async resetInEditor() {
-    await this.loadTextures();
-    // this.setRandom();
-  }
-
   /** 設定角子 */
   setDice(index: number): void {
-    this.node.getComponent(Sprite).spriteFrame = this.textures[index];
+    if (this.node) {
+      this.node.getComponent(Sprite).spriteFrame = this.textures[index];
+    }
   }
 
   /** 亂數決定 */
   setRandom() {
+    // this.node.getComponent(UIOpacity).opacity = 255
     const randomIndex = Math.floor(Math.random() * this.textures.length);
     this.setDice(randomIndex);
   }

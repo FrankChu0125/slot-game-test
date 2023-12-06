@@ -11,6 +11,7 @@ import {
 } from "cc";
 import SlotEnum from "../SlotEnum";
 import { Dice } from "./Dice";
+import { GameManager } from "../GameManager";
 const { ccclass, property } = _decorator;
 
 @ccclass("Reel")
@@ -39,10 +40,12 @@ export class Reel extends Component {
     this.diceGroup = [];
 
     if (!newPrefab) {
-      // this.createReel()
-      // this.shuffle()
+      this.createReel();
+      this.shuffle();
     }
   }
+
+  _gameManger: GameManager
 
   private result: Array<number> = [];
   public stopSpinning = false;
@@ -67,10 +70,16 @@ export class Reel extends Component {
   }
 
   readyStop(newResult: Array<number>): void {
+    console.log("newResult", newResult);
+    for (let i = 0; i < newResult.length; i++) {
+      console.log("readyStop", newResult[i]);
+    }
     const checkDirection =
       this.spinDirection === SlotEnum.Direction.Down || newResult === null;
     this.result = checkDirection ? newResult : newResult.reverse();
     this.stopSpinning = true;
+
+
   }
 
   /** 執行選轉動畫 */
@@ -112,15 +121,16 @@ export class Reel extends Component {
     } else {
       el.getComponent(Dice).setRandom();
     }
+
   }
 
   /** 停止動畫後最後的動作 */
   checkEndCallback(element: Node = null): void {
     const el = element;
     if (this.stopSpinning) {
-      //   this.doStop(el);
+      this.doStop(el);
     } else {
-      //   this.doSpinning(el);
+      this.doSpinning(el);
     }
   }
 
@@ -141,7 +151,7 @@ export class Reel extends Component {
         this.changeCallback(element);
       });
       const callSpinning = tween(element).call(() => {
-        // this.doSpinning(element, 5);
+        this.doSpinning(element, 5);
       });
 
       delay.then(start).then(doChange).then(callSpinning).start();

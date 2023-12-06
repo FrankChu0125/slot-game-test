@@ -13,12 +13,16 @@ import {
 } from "cc";
 import SlotEnum from "../SlotEnum";
 import { Reel } from "./Reel";
+import { GameManager } from "../GameManager";
 const { ccclass, property } = _decorator;
 
 @ccclass("Slot")
 export class Slot extends Component {
-  @property({ type: Node, tooltip: "spin按鈕" })
-  spinBtn: Node = null;
+  @property({ type: Button, tooltip: "spin按鈕" })
+  spinBtn: Button = null;
+
+  @property({ type: Label, tooltip: "spin按鈕的文字" })
+  spinBtnLabel: Label = null;
 
   @property({ type: Node, tooltip: "開獎動畫node" })
   glows: Node = null;
@@ -66,17 +70,19 @@ export class Slot extends Component {
   public spinning = false;
 
   /** 創建拉霸機 */
-  private createMachine() {
+  createMachine(): void {
     // 先初始化
     this.node.destroyAllChildren();
     this.reels = [];
 
     let newReel: Node;
+
     for (let i = 0; i < this.numberOfReels; i++) {
       // 實例化每個角子 後加到軸中
       newReel = instantiate(this.reelPrefab);
       this.node.addChild(newReel);
       this.reels[i] = newReel;
+      console.log(newReel);
 
       // 軸的初始化
       const reel = newReel.getComponent(Reel);
@@ -90,11 +96,12 @@ export class Slot extends Component {
 
   /** 開始轉動 */
   spin(): void {
+    this.spinning = true;
     this.switchSpinBtn(true, "STOP!");
     this.disableGlow();
 
     for (let i = 0; i < this.numberOfReels; i += 1) {
-      const theReel = this.reels[i].getComponent("Reel");
+      const theReel = this.reels[i].getComponent(Reel);
 
       // 基數往上 偶數往下
       if (i % 2) {
@@ -113,15 +120,18 @@ export class Slot extends Component {
    * @param {string} btnName - 按鈕文字更替
    */
   switchSpinBtn(isOpen: boolean, btnName: string): void {
-    this.spinBtn.getComponent(Button).interactable = isOpen;
-    this.spinBtn.getComponent(Label).string = btnName;
+    this.spinBtn.interactable = isOpen;
+    this.spinBtnLabel.string = btnName;
   }
 
-  /** 
+  lock(): void {
+    this.spinBtn.interactable = false;
+  }
+  /**
    * 停止轉動
    * @param {ResultInterface} result - 開獎結果的資料物件。預設值為 null。
    *  */
-  stop(result: ResultInterface = null): void {
+  stop(result: ResultInterface): void {
     // 2.5秒後打開spin動畫 並且將按鈕恢復可點擊狀態
     setTimeout(() => {
       this.spinning = false;
@@ -139,7 +149,7 @@ export class Slot extends Component {
        * 果。這種效果是為了模擬在遊戲中滾軸開始轉動時的加速效果，然後減緩至最終停止 */
       const spinDelay =
         i < 2 + randomOffset ? i / 4 : randomOffset * (i - 2) + i / 4;
-      const theReel = this.reels[i].getComponent("Reel");
+      const theReel = this.reels[i].getComponent(Reel);
 
       // 停止滾軸
       setTimeout(() => {
@@ -148,7 +158,7 @@ export class Slot extends Component {
     }
   }
 
-  /**  
+  /**
    * 根據開獎結果撥放動畫
    * @param {ResultInterface} result - 開獎結果的資料物件。預設值為 null。
    *  */
@@ -160,17 +170,17 @@ export class Slot extends Component {
       // 播放動畫
       for (const glow of line.children) {
         const skel: sp.Skeleton = glow.getComponent(sp.Skeleton);
-        skel.animation = 'loop'
+        skel.animation = "loop";
       }
     }
   }
 
   /** 關閉動畫顯示 */
-  disableGlow(){
+  disableGlow() {
     for (const line of this.glows.children) {
       for (const glow of line.children) {
         const skel: sp.Skeleton = glow.getComponent(sp.Skeleton);
-        skel.animation = null
+        skel.animation = null;
       }
     }
   }
