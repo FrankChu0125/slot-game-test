@@ -3,7 +3,7 @@ import { Slot } from "./slot/Slot";
 import { testData } from "./db";
 const { ccclass, property } = cc._decorator;
 
-@ccclass("GameManager")
+@ccclass()
 export class GameManager extends cc.Component {
   @property({ type: cc.Node, tooltip: "老虎機本體" })
   machine: cc.Node = null;
@@ -62,7 +62,18 @@ export class GameManager extends cc.Component {
 
   async requestResult() {
     this.result = null;
-    this.result = await this.getAnswer();
+    // this.result = await this.getAnswer();
+    this.result =   {
+      equalLines: [2],
+      equalTile: 2,
+      reels: [
+        [0, 4, 2],
+        [2, 5, 2],
+        [0, 6, 2],
+        [5, 29, 2],
+        [28, 5, 2],
+      ],
+    }
     console.log("結果", this.result.reels);
   }
 

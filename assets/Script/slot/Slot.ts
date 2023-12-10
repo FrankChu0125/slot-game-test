@@ -4,7 +4,7 @@ import Reel from "./Reel";
 
 const { ccclass, property } = cc._decorator;
 
-@ccclass("Slot")
+@ccclass()
 export class Slot extends cc.Component {
   @property({ type: cc.Button, tooltip: "spin按鈕" })
   spinBtn: cc.Button = null;

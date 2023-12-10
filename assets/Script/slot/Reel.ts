@@ -39,6 +39,8 @@ export default class Reel extends cc.Component {
 
   /** 建立滾軸 */
   createReel(): void {
+    console.log('建立滾軸');
+    
     let newTile: cc.Node;
     for (let i = 0; i < 5; i += 1) {
       newTile = cc.instantiate(this.tilePrefab);
