@@ -1,0 +1,84 @@
+import { Dice } from "./slot/Dice";
+import { Slot } from "./slot/Slot";
+import { testData } from "./db";
+const { ccclass, property } = cc._decorator;
+
+@ccclass("GameManager")
+export class GameManager extends cc.Component {
+  @property({ type: cc.Node, tooltip: "老虎機本體" })
+  machine: cc.Node = null;
+
+  // 關閉開關
+  private block = false;
+  public result: ResultInterface = null;
+
+  /** 滾軸數量 */
+  private _reelCount = 0;
+
+  get reelCount(): number {
+    if (this._reelCount <= 0) {
+      this._reelCount = this.machine.getComponent(Slot).numberOfReels;
+    }
+
+    return this._reelCount;
+  }
+
+  // 角子數量
+  private _diceCount = 0;
+
+  get diceCount(): number {
+    if (this._diceCount <= 0) {
+      this._diceCount = this.machine.getComponentInChildren(Dice).diceCount;
+    }
+
+    return this._diceCount;
+  }
+
+  //
+  //  methods：
+  //
+  protected start(): void {
+    this.machine.getComponent(Slot).createMachine();
+  }
+
+  protected update(dt: number): void {
+    if (this.block && this.result != null) {
+      console.log("關閉了");
+      this.informStop();
+      this.result = null;
+    }
+  }
+
+  click(): void {
+    if (!this.machine.getComponent(Slot).spinning) {
+      this.block = false;
+      this.machine.getComponent(Slot).spin();
+      this.requestResult();
+    } else if (!this.block) {
+      this.block = true;
+      this.machine.getComponent(Slot).lock();
+    }
+  }
+
+  async requestResult() {
+    this.result = null;
+    this.result = await this.getAnswer();
+    console.log("結果", this.result.reels);
+  }
+
+  getAnswer(): Promise<ResultInterface> {
+    if (!testData) {
+      return null;
+    }
+    return new Promise<ResultInterface>((resolve) => {
+      // 亂數取得模擬的結果
+      const randomIndex = Math.floor(Math.random() * testData.length);
+      const answer: ResultInterface = testData[randomIndex];
+      resolve(answer);
+    });
+  }
+
+  informStop(): void {
+    this.machine.getComponent(Slot).stop(this.result);
+  }
+}
