@@ -1,4 +1,3 @@
-
 import SlotEnum from "../SlotEnum";
 import Reel from "./Reel";
 
@@ -120,6 +119,7 @@ export class Slot extends cc.Component {
    *  */
   stop(result: ResultInterface): void {
     console.log("停止後顯示結果", result);
+    console.log("結果reels", result.reels);
 
     // 2.5秒後打開spin動畫 並且將按鈕恢復可點擊狀態
     setTimeout(() => {
@@ -142,7 +142,7 @@ export class Slot extends cc.Component {
       // 停止滾軸
       setTimeout(() => {
         theReel.readyStop(result.reels[i]);
-      }, 1000);
+      }, spinDelay * 1000);
     }
   }
 

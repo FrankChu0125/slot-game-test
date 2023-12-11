@@ -10,7 +10,7 @@ export class GameManager extends cc.Component {
 
   // 關閉開關
   private block = false;
-  public result: ResultInterface = null;
+  private _result: ResultInterface = null;
 
   /** 滾軸數量 */
   private _reelCount = 0;
@@ -42,10 +42,10 @@ export class GameManager extends cc.Component {
   }
 
   protected update(dt: number): void {
-    if (this.block && this.result != null) {
+    if (this.block && this._result != null) {
       console.log("關閉了");
       this.informStop();
-      this.result = null;
+      this._result = null;
     }
   }
 
@@ -61,26 +61,23 @@ export class GameManager extends cc.Component {
   }
 
   async requestResult() {
-    this.result = null;
-    // this.result = await this.getAnswer();
-    this.result =   {
-      equalLines: [2],
-      equalTile: 2,
-      reels: [
-        [0, 4, 2],
-        [2, 5, 2],
-        [0, 6, 2],
-        [5, 29, 2],
-        [28, 5, 2],
-      ],
-    }
-    console.log("結果", this.result.reels);
+    this._result = null;
+    this._result = await this.getAnswer();
+    // this.result =   {
+    //   equalLines: [2],
+    //   equalTile: 2,
+    //   reels: [
+    //     [0, 4, 2],
+    //     [2, 5, 2],
+    //     [0, 6, 2],
+    //     [5, 29, 2],
+    //     [28, 5, 2],
+    //   ],
+    // }
+    console.log("結果", this._result.reels);
   }
 
   getAnswer(): Promise<ResultInterface> {
-    if (!testData) {
-      return null;
-    }
     return new Promise<ResultInterface>((resolve) => {
       // 亂數取得模擬的結果
       const randomIndex = Math.floor(Math.random() * testData.length);
@@ -90,6 +87,6 @@ export class GameManager extends cc.Component {
   }
 
   informStop(): void {
-    this.machine.getComponent(Slot).stop(this.result);
+    this.machine.getComponent(Slot).stop(this._result);
   }
 }
