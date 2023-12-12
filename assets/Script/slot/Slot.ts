@@ -128,7 +128,7 @@ export class Slot extends cc.Component {
       this.enableGlow(result);
     }, 2500);
 
-    // 設定每軸的旋轉效果
+    // 設定滾軸的旋轉效果中引入一些隨機性。
     const randomOffset = Math.random() / 2;
     for (let i = 0; i < this.numberOfReels; i++) {
       /**

@@ -63,17 +63,6 @@ export class GameManager extends cc.Component {
   async requestResult() {
     this._result = null;
     this._result = await this.getAnswer();
-    // this.result =   {
-    //   equalLines: [2],
-    //   equalTile: 2,
-    //   reels: [
-    //     [0, 4, 2],
-    //     [2, 5, 2],
-    //     [0, 6, 2],
-    //     [5, 29, 2],
-    //     [28, 5, 2],
-    //   ],
-    // }
     console.log("結果", this._result.reels);
   }
 

@@ -69,16 +69,16 @@ export default class Reel extends cc.Component {
     const dirModifier = this.spinDirection === SlotEnum.Direction.Down ? -1 : 1;
     // 移動動畫: y: 144 為直列角子的第一顆 0第二顆 -144第三顆
     const move = cc.tween().by(0.04, { position: cc.v2(0, 144 * dirModifier) });
-    const doChange = cc.tween().call(() => this.changeCallback(element));
+    const doChange = cc.tween().call(() => this.changeDiceCallback(element));
     // 依照傳入的數值重複執行移動且執行更換角子
     const repeat = cc.tween(element).repeat(times, move.then(doChange));
     // 確認執行完畢後進行最後的回調函式
-    const checkEnd = cc.tween().call(() => this.checkEndCallback(element));
+    const checkEnd = cc.tween().call(() => this.checkEndSpinCallback(element));
 
     repeat.then(checkEnd).start();
   }
   /** 更換角子的回調函式 */
-  changeCallback(element: cc.Node): void {
+  changeDiceCallback(element: cc.Node): void {
     const el = element;
     const dirModifier = this.spinDirection === SlotEnum.Direction.Down ? -1 : 1;
     /**
@@ -104,7 +104,7 @@ export default class Reel extends cc.Component {
   }
 
   /** 停止動畫後最後的動作 */
-  checkEndCallback(element: cc.Node): void {
+  checkEndSpinCallback(element: cc.Node): void {
     const el = element;
     if (this.stopSpinning) {
       this.doStop(el);
@@ -129,7 +129,7 @@ export default class Reel extends cc.Component {
           { position: cc.v2(0, 144 * dirModifier) },
           { easing: "backIn" }
         );
-      const doChange = cc.tween().call(() => this.changeCallback(element));
+      const doChange = cc.tween().call(() => this.changeDiceCallback(element));
       const callSpinning = cc
         .tween(element)
         .call(() => this.doSpinning(element, 5));
@@ -144,7 +144,7 @@ export default class Reel extends cc.Component {
     const move = cc
       .tween(element)
       .by(0.04, { position: cc.v3(0, 144 * dirModifier) });
-    const doChange = cc.tween().call(() => this.changeCallback(element));
+    const doChange = cc.tween().call(() => this.changeDiceCallback(element));
     const end = cc
       .tween()
       .by(
